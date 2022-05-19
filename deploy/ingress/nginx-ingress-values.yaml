@@ -2,6 +2,11 @@
 ## Ref: https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx
 ##
 controller:
+  image:
+    registry: docker.io
+    image: togettoyou/k8s.gcr.io.ingress-nginx.controller
+    tag: "v1.1.1"
+    digest:
   admissionWebhooks:
     enabled: false
     patch:

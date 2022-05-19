@@ -123,8 +123,11 @@ demo: ## Execute end-to-end demo
 deploy-full-local-setup: ensure-cluster-size ## Deploy full local multicluster setup (k3d >= 5.1.0)
 	@echo -e "\n$(YELLOW)Creating $(CLUSTERS_NUMBER) k8s clusters$(NC)"
 	$(MAKE) create-local-cluster CLUSTER_NAME=edge-dns
+	k3d image import gcr.io/google_containers/busybox -c edgedns
 	@for c in $(CLUSTER_IDS); do \
 		$(MAKE) create-local-cluster CLUSTER_NAME=$(CLUSTER_NAME)$$c ;\
+		k3d image import k8s.gcr.io/ingress-nginx/controller:v1.1.1 -c $(CLUSTER_NAME)$$c ;\
+		k3d image import gcr.io/google_containers/busybox -c $(CLUSTER_NAME)$$c ;\
 	done
 
 	$(MAKE) deploy-stable-version DEPLOY_APPS=true
@@ -510,7 +513,7 @@ endef
 
 # waits for NGINX, GSLB are ready
 define wait-for-ingress
-	kubectl -n k8gb wait --for=condition=Ready pod -l app.kubernetes.io/name=ingress-nginx --timeout=600s
+	kubectl -n k8gb wait --for=condition=Ready pod -l app.kubernetes.io/name=ingress-nginx --timeout=120s
 endef
 
 define generate

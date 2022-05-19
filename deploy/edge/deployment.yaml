@@ -17,6 +17,7 @@ spec:
       - name: copy-zone
         image: gcr.io/google_containers/busybox
         command: [ "cp", "/etc/bind/k8s.zone", "/var/lib/bind/zones/k8s.zone" ]
+        imagePullPolicy: IfNotPresent
         volumeMounts:
           - mountPath: /etc/bind
             name: config
